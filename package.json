@@ -1,0 +1,14 @@
+{
+  "name": "othello",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "pixi.js": "^5.2.0",
+    "socket.io": "^2.3.0",
+    "webpack": "^4.41.2"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.10"
+  }
+}
