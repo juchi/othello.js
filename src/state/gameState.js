@@ -1,8 +1,8 @@
-import Game from './game.js';
-import GameClient from './gameClient.js';
-import GameLogic from './core/gameLogic.js';
-import Renderer from './front/renderer.js';
-import UI from './front/ui.js';
+import Game from '../game.js';
+import GameClient from '../gameClient.js';
+import GameLogic from '../core/gameLogic.js';
+import Renderer from '../front/renderer.js';
+import UI from '../front/ui.js';
 
 export default class GameState {
     constructor(stack, container, mode) {

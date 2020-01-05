@@ -1,4 +1,5 @@
 import GameState from './gameState.js';
+import WaitRemoteState from './waitRemoteState.js';
 
 export default class MenuState {
     constructor(stack, parentContainer) {
