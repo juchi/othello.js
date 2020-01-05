@@ -4,10 +4,12 @@ export default class GameClient {
     constructor() {
         let socket = io();
         this.socket = socket;
+        this.newGameMsg = null;
+        this.newGameCallback = () => null;
 
         socket.on('new game', function (msg) {
-            console.log('new game msg');
-            this.doStartGame(msg);
+            this.newGameMsg = msg;
+            this.newGameCallback();
         }.bind(this));
         socket.on('init grid', function (msg) {
             console.log('init grid msg');
@@ -35,15 +37,20 @@ export default class GameClient {
         this.game.setCurrentPlayer(i);
     }
 
-    startNewGame() {
+    askStartGame(callback) {
         this.socket.emit('ask new game');
+        this.newGameCallback = callback;
     }
 
-    doStartGame(msg) {
-        this.game.setPlayerInfo(msg);
+    startNewGame() {
+        this.game.setPlayerInfo(this.newGameMsg);
     }
 
     handleGridSelection(x, y, currentPlayer) {
         this.socket.emit('grid select', {x: x, y: y});
+    }
+
+    disconnect() {
+        this.socket.disconnect();
     }
 }

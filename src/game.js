@@ -4,12 +4,12 @@ import PawnGraphics from './front/pawnGraphics.js'
 
 export default class Game
 {
-    constructor(ui, renderer, gamelogicClass) {
+    constructor(ui, renderer, gameLogicInstance) {
         this.ui = ui;
         this.ui.game = this;
         this.players = [{color: 0}, {color: 1}];
         this.currentPlayerIndex = 0;
-        this.logic = new gamelogicClass();
+        this.logic = gameLogicInstance;
         this.logic.setGame(this);
         this.renderer = renderer;
         this.renderer.setGame(this);

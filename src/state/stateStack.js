@@ -4,7 +4,10 @@ export default class StateStack {
     }
 
     pop() {
-        return this.array.pop();
+        let oldState = this.array.pop();
+        oldState.destroy();
+
+        return oldState;
     }
 
     push(state) {
@@ -14,6 +17,7 @@ export default class StateStack {
 
     change(state) {
         let oldState = this.array.pop();
+        oldState.destroy();
         this.array.push(state);
 
         return oldState;

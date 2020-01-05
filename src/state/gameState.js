@@ -5,10 +5,10 @@ import Renderer from '../front/renderer.js';
 import UI from '../front/ui.js';
 
 export default class GameState {
-    constructor(stack, container, mode) {
+    constructor(stack, container, gameLogic) {
         this.stack = stack;
         this.container = container;
-        this.mode = mode ? mode : 'local';
+        this.gameLogic = gameLogic;
         this.init();
     }
 
@@ -18,7 +18,7 @@ export default class GameState {
         ui.setup();
         
         let renderer = new Renderer(this.container);
-        this.game = new Game(ui, renderer, this.mode == 'remote' ? GameClient : GameLogic);
+        this.game = new Game(ui, renderer, this.gameLogic);
         this.game.startNewGame();
     }
 
@@ -26,13 +26,12 @@ export default class GameState {
         if (e.keyCode === 65) {
             this.game.startNewGame();
         } else if (e.keyCode === 27) {
-            this.destroy();
+            this.stack.pop();
         }
     }
 
     destroy() {
         this.game.destroy();
         this.ui.destroy();
-        this.stack.pop();
     }
 }
