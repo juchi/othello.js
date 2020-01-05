@@ -9,7 +9,7 @@ module.exports = class GameLogic
         this.grid = new Grid();
     }
 
-    setGameClient(game) {
+    setGame(game) {
         this.game = game;
     }
 

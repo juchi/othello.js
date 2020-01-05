@@ -27,7 +27,7 @@ export default class GameClient {
         }.bind(this));
     }
 
-    setGameClient(game) {
+    setGame(game) {
         this.game = game;
     }
 

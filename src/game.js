@@ -10,7 +10,7 @@ export default class Game
         this.players = [{color: 0}, {color: 1}];
         this.currentPlayerIndex = 0;
         this.logic = new gamelogicClass();
-        this.logic.setGameClient(this);
+        this.logic.setGame(this);
         this.renderer = renderer;
         this.renderer.setGame(this);
         this.playerColor = null;

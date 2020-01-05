@@ -1,12 +1,10 @@
-//import Grid from './core/grid.js';
-//import Pawn from './core/pawn.js';
 let GameLogic = require('../core/gameLogic.js');
 
 module.exports = class Game
 {
     constructor() {
         this.logic = new GameLogic();
-        this.logic.setGameClient(this);
+        this.logic.setGame(this);
         this.players = [];
     }
     
