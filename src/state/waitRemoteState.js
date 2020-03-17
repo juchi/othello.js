@@ -7,6 +7,7 @@ export default class WaitRemoteState {
         this.parentContainer = parentContainer;
         this.stack = stack;
         this.container = new PIXI.Container();
+        this.connecting = false;
         parentContainer.addChild(this.container);
 
         const waitText = new PIXI.Text('Waiting for players');
@@ -27,7 +28,8 @@ export default class WaitRemoteState {
 
     initConnection() {
         this.client = new GameClient();
-        this.client.askStartGame(() => this.startGame());
+        this.connecting = true;
+        this.client.askStartGame(() => {this.connecting = false, this.startGame()});
     }
 
     startGame() {
@@ -36,7 +38,9 @@ export default class WaitRemoteState {
 
     destroy() {
         this.container.destroy();
-        this.client.disconnect();
+        if (this.connecting) {
+            this.client.disconnect();
+        }
     }
 
     onKeydown(e) {
