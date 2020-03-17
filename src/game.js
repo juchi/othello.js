@@ -44,6 +44,10 @@ export default class Game
         this.logic.startNewGame();
     }
 
+    info(msg) {
+        this.ui.info(msg);
+    }
+
     initGrid(data) {
         this.grid = new Grid();
         this.renderer.initGrid(this.grid);
