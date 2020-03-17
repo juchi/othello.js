@@ -75,6 +75,7 @@ export default class GridGraphics
         }
     
         this.board.on('click', (e) => this.handleGridClick(e));
+        this.board.on('tap', (e) => this.handleGridClick(e));
     }
 
     handleGridClick(e) {
