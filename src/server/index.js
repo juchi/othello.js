@@ -1,7 +1,6 @@
 let http = require('http');
 let fs = require('fs');
 let path = require('path');   
-let GameLogic = require('../core/gameLogic.js');
 let Game = require('./game.js');
 
 let server = http.createServer(function (req, res) {
@@ -27,7 +26,8 @@ let server = http.createServer(function (req, res) {
 });
 
 let waiting = {};
-let game = null;
+let inGameSockets = {};
+let games = [];
 let io = require('socket.io')(server);
 io.on('connection', function(socket){
     console.log('new socket connection');
@@ -35,16 +35,20 @@ io.on('connection', function(socket){
     socket.on('disconnect', function(){
         console.log('user disconnected');
         delete waiting[socket.id];
+        if (inGameSockets[socket.id]) {
+            inGameSockets[socket.id].onDisconnect(socket.id);
+        }
+        delete inGameSockets[socket.id];
     });
 
     socket.on('grid select', function(data) {
-        console.log('grid select');
+        let game = inGameSockets[socket.id];
         game && game.handleGridSelection(data.x, data.y, socket);
     });
 
     socket.on('ask new game', function(data) {
         if (typeof waiting[socket.id] === 'undefined') {
-            waiting[socket.id] = playerFromSocket(socket);
+            waiting[socket.id] = playerFromSocket(socket, data ? data.name : null);
         }
         
         console.log(Object.keys(waiting).length + ' players in queue');
@@ -56,9 +60,10 @@ io.on('connection', function(socket){
     });
 });
 
-function playerFromSocket(socket) {
+function playerFromSocket(socket, name) {
     return {
-        socket: socket
+        socket: socket,
+        name: name
     }
 }
 function startGame(waitingList) {
@@ -70,13 +75,15 @@ function startGame(waitingList) {
 
     let data = {};
     data.pawns = {};
-    game = new Game();
+    let game = new Game();
     for (let p of players) {
         game.addPlayer(p);
+        inGameSockets[p.socket.id] = game;
     }
     
     game.startNewGame();
 
+    games.push(game);
 } 
 
 let portNumber = 8080;
