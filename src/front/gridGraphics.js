@@ -50,7 +50,7 @@ export default class GridGraphics
 
     init(grid) {
         this.rows = grid.rows;
-        this.cols = grid.rows;
+        this.cols = grid.cols;
         this.squareSize = this.width / this.rows;
 
         this.initShapes();

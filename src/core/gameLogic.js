@@ -32,7 +32,7 @@ module.exports = class GameLogic
     // private
     initGrid() {
         this.grid.clear();
-        this.setupStartPawns();
+        this.setupStartPawns(this.grid);
         let data = {pawns: []};
         for (let col of this.grid.pawns) {
             if (typeof col === 'undefined') {
@@ -58,12 +58,14 @@ module.exports = class GameLogic
     }
 
     // private
-    setupStartPawns() {
+    setupStartPawns(grid) {
+        let x = (grid.cols / 2)|0;
+        let y = (grid.rows / 2)|0;
         let startPawns = [
-            {x: 3, y: 3, color: 0},
-            {x: 3, y: 4, color: 1},
-            {x: 4, y: 4, color: 0},
-            {x: 4, y: 3, color: 1}
+            {x: x-1, y: y-1, color: 0},
+            {x: x-1, y: y, color: 1},
+            {x: x, y: y, color: 0},
+            {x: x, y: y-1, color: 1}
         ];
         for (let startPawn of startPawns) {
             let pawn = new Pawn();
