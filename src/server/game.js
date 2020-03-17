@@ -37,6 +37,28 @@ module.exports = class Game
         this.logic.startNewGame();
     }
 
+    endGame() {
+        let winner = this.logic.getWinner();
+        for (let p of this.players) {
+            p.socket.emit('end game', winner);
+        }
+    }
+
+    onDisconnect(socketId) {
+        for (let p of this.players) {
+            if (p.socket.id == socketId) {
+                this.broadcast('missing player');
+                break;
+            }
+        }
+    }
+
+    broadcast(msg, data) {
+        for (let p of this.players) {
+            p.socket.emit(msg, data);
+        }
+    }
+
     initGrid(data) {
         for (let p of this.players) {
             p.socket.emit('init grid', data);

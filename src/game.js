@@ -44,6 +44,19 @@ export default class Game
         this.logic.startNewGame();
     }
 
+    endGame() {
+        let winner = this.logic.getWinner();
+        let win = '';
+        if (winner === 0) {
+            win = 'Black wins';
+        } else if (winner === 1) {
+            win = 'White wins';
+        } else {
+            win = 'Draw';
+        }
+        this.info('Game is finished ' + win);
+    }
+
     info(msg) {
         this.ui.info(msg);
     }

@@ -27,6 +27,14 @@ export default class GameClient {
             console.log('set current player msg', msg);
             this.game.setCurrentPlayer(msg);
         }.bind(this));
+        socket.on('missing player', function (msg) {
+            console.log('missing player msg', msg);
+            this.game.info('missing disconnected opponent');
+        }.bind(this));
+        socket.on('end game', function (msg) {
+            console.log('end game msg', msg);
+            this.game.info('Game is finished ' + (msg == 0 ? 'black' : 'white') + ' wins');
+        }.bind(this));
     }
 
     setGame(game) {

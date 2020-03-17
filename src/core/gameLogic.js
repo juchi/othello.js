@@ -20,13 +20,56 @@ module.exports = class GameLogic
         } else {
             this.currentPlayerIndex = (this.currentPlayerIndex + 1) % 2;
         }
-        
+
+        if (!this.canPlay(this.currentPlayerIndex)) {
+            this.currentPlayerIndex = (this.currentPlayerIndex + 1) % 2;
+            if (!this.canPlay(this.currentPlayerIndex)) {
+                this.game.endGame();
+                return;
+            }
+        }
+
         this.game.setCurrentPlayer(this.currentPlayerIndex);
+    }
+
+    canPlay(playerIndex) {
+        for (let square of this.grid.getEmptySquares()) {
+            if (this.grid.isMoveAllowed(square.x, square.y, playerIndex)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     startNewGame() {
         this.initGrid();
         this.changePlayer(0);
+    }
+
+    getColorCounts() {
+        let counts = {0: 0, 1: 0};
+        for (let x = 0; x < this.grid.cols; x++) {
+            for (let y = 0; y < this.grid.rows; y++) {
+                let pawn = this.grid.getPawn(x, y);
+                if (pawn) {
+                    counts[pawn.color]++;
+                }
+            }
+        }
+
+        return counts;
+    }
+
+    getWinner() {
+        let counts = this.getColorCounts();
+        if (counts[0] > counts[1]) {
+            return 0;
+        } else if (counts[0] < counts[1]) {
+            return 1;
+        } else {
+            return null;
+        }
     }
 
     // private

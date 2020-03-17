@@ -22,6 +22,19 @@ module.exports = class Grid
         return this.getPawn(x, y) == null;
     }
 
+    getEmptySquares() {
+        let items = [];
+        for (let x = 0; x < this.cols; x++) {
+            for (let y = 0; y < this.rows; y++) {
+                if (this.isEmptySquare(x, y)) {
+                    items.push({x: x, y: y});
+                }
+            }
+        }
+
+        return items;
+    }
+
     getPawn(x, y) {
         if (!this.pawns[x]) {            
             return null;
