@@ -96,8 +96,7 @@ module.exports = class GameLogic
         let flipList = this.grid.searchFlippablePawns(newPawn.x, newPawn.y, newPawn.color);
         flipList.map((pawn) => pawn.setColor(newPawn.color));
 
-        let flipData = flipList.map((pawn) => { return {x: pawn.x, y: pawn.y} });
-        this.game.flipPawns(flipData, newPawn.color);
+        this.game.flipPawns(flipList, newPawn.color);
     }
 
     // private

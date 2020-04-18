@@ -1,8 +1,7 @@
 import Game from '../game.js';
-import GameClient from '../gameClient.js';
-import GameLogic from '../core/gameLogic.js';
 import Renderer from '../front/renderer.js';
 import UI from '../front/ui.js';
+import AnimatePawnsState from './animatePawnsState.js';
 
 export default class GameState {
     constructor(stack, container, gameLogic) {
@@ -18,7 +17,7 @@ export default class GameState {
         ui.setup();
         
         let renderer = new Renderer(this.container);
-        this.game = new Game(ui, renderer, this.gameLogic);
+        this.game = new Game(ui, renderer, this.gameLogic, this);
         this.game.startNewGame();
     }
 
@@ -33,5 +32,13 @@ export default class GameState {
     destroy() {
         this.game.destroy();
         this.ui.destroy();
+    }
+
+    animation(pawns, futureColor) {
+        this.stack.push(new AnimatePawnsState(this.stack, pawns, futureColor));
+    }
+
+    isActive() {
+        return this.stack.current() === this;
     }
 }

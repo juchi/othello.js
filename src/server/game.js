@@ -72,8 +72,9 @@ module.exports = class Game
     }
 
     flipPawns(flipList, color) {
+        let flipData = flipList.map((pawn) => { return {x: pawn.x, y: pawn.y} });
         for (let p of this.players) {
-            p.socket.emit('flip pawns', {pawns: flipList, color: color});
+            p.socket.emit('flip pawns', {pawns: flipData, color: color});
         }
     }
 

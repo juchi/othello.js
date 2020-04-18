@@ -4,7 +4,7 @@ import PawnGraphics from './front/pawnGraphics.js'
 
 export default class Game
 {
-    constructor(ui, renderer, gameLogicInstance) {
+    constructor(ui, renderer, gameLogicInstance, state) {
         this.ui = ui;
         this.ui.game = this;
         this.players = [{color: 0}, {color: 1}];
@@ -14,6 +14,7 @@ export default class Game
         this.renderer = renderer;
         this.renderer.setGame(this);
         this.playerColor = null;
+        this.state = state;
     }
     
     destroy() {
@@ -76,12 +77,16 @@ export default class Game
         pawn.initGraphics(new PawnGraphics(this.renderer.gridGraphics.squareSize));
         pawn.setPos(pawnData.x, pawnData.y);
         pawn.setColor(pawnData.color);
+        pawn.graphics.render();
         this.grid.addPawn(pawn);
         
         this.renderer.gridGraphics.container.addChild(pawn.graphics.shape);
     }
 
     handleGridSelection(x, y) {
+        if (!this.state.isActive()) {
+            return;
+        }
         let currentPlayer = this.getCurrentPlayer();
         if (this.playerColor === null || currentPlayer.color === this.playerColor) {
             this.logic.handleGridSelection(x, y, currentPlayer);
@@ -93,9 +98,9 @@ export default class Game
     }
 
     updatePawnsColor(pawnsToUpdate, newColor) {
-        for (let coords of pawnsToUpdate) {
-            let pawn = this.grid.getPawn(coords.x, coords.y);
-            pawn.setColor(newColor);
-        }
+        // convert game logic pawn data to frontend (with graphics) Pawn object
+        let pawns = pawnsToUpdate.map((data) => this.grid.getPawn(data.x, data.y));
+
+        this.state.animation(pawns, newColor);
     }
 }
