@@ -4,7 +4,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "start": "node src/server/index.js"
   },
   "dependencies": {
     "pixi.js": "^5.2.0",

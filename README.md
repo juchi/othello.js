@@ -5,13 +5,13 @@ Install and build
 
 ```
 yarn install
-./node_modules/.bin/webpack
+yarn build
 ```
 
 Start the webserver
 
 ```
-node src/server/index.js
+yarn start
 ```
 
 Go to http://example.server:8080
