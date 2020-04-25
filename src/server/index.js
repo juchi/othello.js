@@ -1,92 +1,75 @@
-let http = require('http');
-let fs = require('fs');
-let path = require('path');   
 let Game = require('./game.js');
 
-let server = http.createServer(function (req, res) {
-    if (req.method !== "GET") {
-        res.writeHead(404, {'Content-Type': 'text/html'});
-        res.write("Not found");
-        res.end();
-        return;
+class Server {
+    constructor() {
+        this.games = [];
+        this.waiting = {};
+        this.inGameSockets = {};
     }
 
-    let fileName = req.url == '/' ? '/index.html' : req.url;
-    let filePath = path.join(__dirname, '../..' + fileName);
-    fs.readFile(filePath, function (err, data) {
-        if (err) {
-            data = 'error';
-            console.log(err);
+    playerFromSocket(socket, name) {
+        return {
+            socket: socket,
+            name: name
         }
-        res.writeHead(200);
-        res.write(data);
-        res.end();
-    });
+    }
 
-});
-
-let waiting = {};
-let inGameSockets = {};
-let games = [];
-let io = require('socket.io')(server);
-io.on('connection', function(socket){
-    console.log('new socket connection');
-
-    socket.on('disconnect', function(){
-        console.log('user disconnected');
-        delete waiting[socket.id];
-        if (inGameSockets[socket.id]) {
-            inGameSockets[socket.id].onDisconnect(socket.id);
+    startGame() {
+        let players = [];
+        for (let i of Object.keys(this.waiting)) {
+            players.push(this.waiting[i]);
+            delete this.waiting[i];
         }
-        delete inGameSockets[socket.id];
-    });
 
-    socket.on('grid select', function(data) {
-        let game = inGameSockets[socket.id];
-        game && game.handleGridSelection(data.x, data.y, socket);
-    });
-
-    socket.on('ask new game', function(data) {
-        if (typeof waiting[socket.id] === 'undefined') {
-            waiting[socket.id] = playerFromSocket(socket, data ? data.name : null);
+        let data = {};
+        data.pawns = {};
+        let game = new Game();
+        for (let p of players) {
+            game.addPlayer(p);
+            this.inGameSockets[p.socket.id] = game;
         }
         
-        console.log(Object.keys(waiting).length + ' players in queue');
-        if (Object.keys(waiting).length > 1) {
-            console.log('starting a game');
-            startGame(waiting);
-        }
-        console.log(Object.keys(waiting).length + ' players in queue');
-    });
-});
+        game.startNewGame();
+        this.games.push(game);
+    }
 
-function playerFromSocket(socket, name) {
-    return {
-        socket: socket,
-        name: name
+    onSocketConnection(socket) {
+        let server = this;
+        console.log('new socket connection');
+
+        socket.on('disconnect', function(){
+            console.log('user disconnected');
+            delete server.waiting[socket.id];
+            if (server.inGameSockets[socket.id]) {
+                server.inGameSockets[socket.id].onDisconnect(socket.id);
+            }
+            delete server.inGameSockets[socket.id];
+        });
+
+        socket.on('grid select', function(data) {
+            let game = server.inGameSockets[socket.id];
+            game && game.handleGridSelection(data.x, data.y, socket);
+        });
+
+        socket.on('ask new game', function(data) {
+            if (typeof server.waiting[socket.id] === 'undefined') {
+                server.waiting[socket.id] = server.playerFromSocket(socket, data ? data.name : null);
+            }
+
+            console.log(Object.keys(server.waiting).length + ' players in queue');
+            if (Object.keys(server.waiting).length > 1) {
+                console.log('starting a game');
+                server.startGame(server.waiting);
+            }
+            console.log(Object.keys(server.waiting).length + ' players in queue');
+        });
     }
 }
-function startGame(waitingList) {
-    let players = [];
-    for (let i of Object.keys(waitingList)) {
-        players.push(waitingList[i]);
-        delete waitingList[i];
-    }
 
-    let data = {};
-    data.pawns = {};
-    let game = new Game();
-    for (let p of players) {
-        game.addPlayer(p);
-        inGameSockets[p.socket.id] = game;
-    }
-    
-    game.startNewGame();
+let server = new Server();
+let httpServer = require('./http.js');
 
-    games.push(game);
-} 
-
-let portNumber = 8080;
-server.listen(portNumber, function() {
-    console.log('HTTP server start on port ' + portNumber);
+let io = require('socket.io')(httpServer);
+io.on('connection', function(socket){
+    server.onSocketConnection(socket);
 });
