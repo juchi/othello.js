@@ -3,7 +3,7 @@ import Renderer from '../front/renderer.js';
 import UI from '../front/ui.js';
 import AnimatePawnsState from './animatePawnsState.js';
 
-export default class GameState {
+export default class PlayState {
     constructor(stack, container, gameLogic) {
         this.stack = stack;
         this.container = container;

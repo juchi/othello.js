@@ -1,6 +1,6 @@
 import { Graphics } from 'pixi.js';
 import GameClient from '../gameClient.js';
-import GameState from './gameState.js';
+import PlayState from './playState.js';
 
 export default class WaitRemoteState {
     constructor(stack, parentContainer) {
@@ -33,7 +33,7 @@ export default class WaitRemoteState {
     }
 
     startGame() {
-        this.stack.change(new GameState(this.stack, this.parentContainer, this.client));
+        this.stack.change(new PlayState(this.stack, this.parentContainer, this.client));
     }
 
     destroy() {

@@ -1,5 +1,5 @@
 import GameLogic from '../core/gameLogic.js';
-import GameState from './gameState.js';
+import PlayState from './playState.js';
 import WaitRemoteState from './waitRemoteState.js';
 
 export default class MenuState {
@@ -30,7 +30,7 @@ export default class MenuState {
     }
 
     newLocalGame() {
-        this.stack.push(new GameState(this.stack, this.container, new GameLogic()));
+        this.stack.push(new PlayState(this.stack, this.container, new GameLogic()));
     }
     newRemoteGame() {
         this.stack.push(new WaitRemoteState(this.stack, this.container));
