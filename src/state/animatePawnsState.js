@@ -3,19 +3,24 @@ import IndividualAnimateState from "../front/pawnState/animateState";
 export default class AnimatePawnsState {
     constructor(stack, pawns, futureColor) {
         this.stack = stack;
-        this.previous = Date.now();
-        this.interval = setInterval(() => {
-            let time = Date.now();
-            this.thick(time - this.previous)
-            this.previous = time;
-        }, 100);
+        this.previous = null;
+        this.frameId = window.requestAnimationFrame(this.thick.bind(this));
+
         this.states = pawns.map((p, i) => new IndividualAnimateState(this, p, futureColor, i));
     }
 
-    thick(dt) {
+    thick(time) {
+        if (this.previous === null) {
+            this.previous = time;
+        }
+        let dt = time - this.previous;
+        this.previous = time;
+
         for (let pawnState of this.states) {
             pawnState.update(dt);
         }
+
+        this.frameId = window.requestAnimationFrame(this.thick.bind(this));
     }
 
     onKeyDown() {
@@ -31,7 +36,7 @@ export default class AnimatePawnsState {
     }
 
     destroy() {
-        clearInterval(this.interval);
-        this.states = null;
+        window.cancelAnimationFrame(this.frameId);
+        this.states = [];
     }
 }
