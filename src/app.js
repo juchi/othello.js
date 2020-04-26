@@ -1,8 +1,7 @@
 import MenuState from './state/menuState.js';
 import StateStack from './state/stateStack.js';
 
-let windowWidth = 1000;
-const app = new PIXI.Application({width: windowWidth, height: 900});
+const app = new PIXI.Application({resizeTo: window});
 document.body.appendChild(app.view);
 
 start();

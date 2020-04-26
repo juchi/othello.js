@@ -19,6 +19,8 @@ export default class Renderer
 
     initGrid(grid) {
         this.gridContainer = new PIXI.Container();
+        this.gridContainer.x = 10;
+        this.gridContainer.y = 10;
         this.gridGraphics = new GridGraphics(this.gridContainer, this);
         this.gridGraphics.init(grid);
 
