@@ -4,16 +4,17 @@ import PlayState from './playState.js';
 
 export default class WaitRemoteState {
     constructor(stack, parentContainer) {
+        this.timer = 0;
         this.parentContainer = parentContainer;
         this.stack = stack;
         this.container = new PIXI.Container();
         this.connecting = false;
         parentContainer.addChild(this.container);
 
-        const waitText = new PIXI.Text('Waiting for players');
-        waitText.x = 100;
-        waitText.y = 100;
-        waitText.style = new PIXI.TextStyle({fill: 0xFFFFFF});
+        this.waitText = new PIXI.Text('Waiting for players');
+        this.waitText.x = 100;
+        this.waitText.y = 100;
+        this.waitText.style = new PIXI.TextStyle({fill: 0xFFFFFF});
 
         let background = new Graphics();
         background.beginFill(0x000000);
@@ -21,7 +22,7 @@ export default class WaitRemoteState {
         background.endFill();
 
         this.container.addChild(background);
-        this.container.addChild(waitText);
+        this.container.addChild(this.waitText);
 
         this.initConnection();
     }
@@ -41,6 +42,16 @@ export default class WaitRemoteState {
         if (this.connecting) {
             this.client.disconnect();
         }
+    }
+
+    update(dt) {
+        let baseText = 'Waiting for players';
+        let dots = '';
+        this.timer = this.timer + dt;
+        for (let i = 0; i < Math.floor(this.timer / 1000) % 4; i++) {
+            dots = dots + '.';
+        }
+        this.waitText.text = baseText + dots;
     }
 
     onKeydown(e) {

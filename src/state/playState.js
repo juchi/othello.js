@@ -34,6 +34,10 @@ export default class PlayState {
         this.ui.destroy();
     }
 
+    update(dt) {
+        
+    }
+
     animation(pawns, futureColor) {
         this.stack.push(new AnimatePawnsState(this.stack, pawns, futureColor));
     }

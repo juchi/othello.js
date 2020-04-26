@@ -16,4 +16,19 @@ function start() {
         console.log(e);
         stateStack.length() && stateStack.current().onKeydown(e);
     });
+
+    let previousTime = null;
+    function loop(time) {
+        if (previousTime === null) {
+            previousTime = time;
+        }
+        let dt = time - previousTime;
+        previousTime = time;
+
+        stateStack.length() && stateStack.current().update(dt);
+
+        requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
 }

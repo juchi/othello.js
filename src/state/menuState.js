@@ -43,4 +43,8 @@ export default class MenuState {
     onKeydown(e) {
 
     }
+
+    update (dt) {
+        
+    }
 }
