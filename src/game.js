@@ -43,6 +43,7 @@ export default class Game
 
     startNewGame() {
         this.logic.startNewGame();
+        this.info('');
     }
 
     endGame() {
