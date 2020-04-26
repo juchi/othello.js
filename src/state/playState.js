@@ -34,8 +34,15 @@ export default class PlayState {
         this.ui.destroy();
     }
 
+    enter() {
+
+    }
+    exit() {
+
+    }
+
     update(dt) {
-        
+
     }
 
     animation(pawns, futureColor) {

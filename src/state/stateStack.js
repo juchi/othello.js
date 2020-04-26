@@ -5,20 +5,31 @@ export default class StateStack {
 
     pop() {
         let oldState = this.array.pop();
+        oldState.exit();
         oldState.destroy();
+
+        if (this.array.length > 0) {
+            this.current().enter();
+        }
 
         return oldState;
     }
 
     push(state) {
+        if (this.array.length > 0) {
+            this.current().exit();
+        }
         this.array.push(state);
+        state.enter();
         return state;
     }
 
     change(state) {
         let oldState = this.array.pop();
+        oldState.exit();
         oldState.destroy();
         this.array.push(state);
+        state.enter();
 
         return oldState;
     }

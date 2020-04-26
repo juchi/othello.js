@@ -24,6 +24,13 @@ export default class AnimatePawnsState {
         }
     }
 
+    enter() {
+
+    }
+    exit() {
+
+    }
+
     destroy() {
         this.states = [];
     }

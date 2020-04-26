@@ -6,7 +6,8 @@ export default class MenuState {
     constructor(stack, parentContainer) {
         this.stack = stack;
         this.container = new PIXI.Container();
-        parentContainer.addChild(this.container);
+        this.parentContainer = parentContainer;
+        this.parentContainer.addChild(this.container);
 
         const newGameText = new PIXI.Text('New local game');
         newGameText.x = 100;
@@ -30,10 +31,10 @@ export default class MenuState {
     }
 
     newLocalGame() {
-        this.stack.push(new PlayState(this.stack, this.container, new GameLogic()));
+        this.stack.push(new PlayState(this.stack, this.parentContainer, new GameLogic()));
     }
     newRemoteGame() {
-        this.stack.push(new WaitRemoteState(this.stack, this.container));
+        this.stack.push(new WaitRemoteState(this.stack, this.parentContainer));
     }
 
     destroy() {
@@ -44,7 +45,14 @@ export default class MenuState {
 
     }
 
+    enter() {
+        this.container.visible = true;
+    }
+    exit() {
+        this.container.visible = false;
+    }
+
     update (dt) {
-        
+
     }
 }

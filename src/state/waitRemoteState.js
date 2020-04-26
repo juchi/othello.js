@@ -44,6 +44,13 @@ export default class WaitRemoteState {
         }
     }
 
+    enter() {
+
+    }
+    exit() {
+
+    }
+
     update(dt) {
         let baseText = 'Waiting for players';
         let dots = '';
