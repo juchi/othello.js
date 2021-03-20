@@ -45,8 +45,8 @@ export default class GameClient {
         this.game.setCurrentPlayer(i);
     }
 
-    askStartGame(callback) {
-        this.socket.emit('ask new game');
+    askStartGame(data, callback) {
+        this.socket.emit('ask new game', {playerName: data.playerName});
         this.newGameCallback = callback;
     }
 

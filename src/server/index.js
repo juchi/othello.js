@@ -53,15 +53,15 @@ class Server {
 
         socket.on('ask new game', function(data) {
             if (typeof server.waiting[socket.id] === 'undefined') {
-                server.waiting[socket.id] = server.playerFromSocket(socket, data ? data.name : null);
+                server.waiting[socket.id] = server.playerFromSocket(socket, data ? data.playerName : null);
             }
 
             console.log(Object.keys(server.waiting).length + ' players in queue');
             if (Object.keys(server.waiting).length > 1) {
                 console.log('starting a game');
                 server.startGame(server.waiting);
+                console.log(Object.keys(server.waiting).length + ' players in queue');
             }
-            console.log(Object.keys(server.waiting).length + ' players in queue');
         });
     }
 }
