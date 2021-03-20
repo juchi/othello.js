@@ -2,10 +2,11 @@ let GameLogic = require('../core/gameLogic.js');
 
 module.exports = class Game
 {
-    constructor() {
+    constructor(roomId) {
         this.logic = new GameLogic();
         this.logic.setGame(this);
         this.players = [];
+        this.roomId = roomId;
     }
     
     destroy() {
@@ -31,8 +32,17 @@ module.exports = class Game
     }
 
     startNewGame() {
+        let playerData = [];
         for (let p of this.players) {
-            p.socket.emit('new game', p.color);
+            playerData.push({
+                name: p.name,
+                color: p.color,
+                id: p.socket.id
+            });
+        }
+
+        for (let p of this.players) {
+            p.socket.emit('new game', {color: p.color, players: playerData});
         }
         this.logic.startNewGame();
     }

@@ -1,20 +1,26 @@
 let Game = require('./game.js');
 
 class Server {
-    constructor() {
-        this.games = [];
+    constructor(httpServer) {
+        this.games = {};
         this.waiting = {};
         this.inGameSockets = {};
+
+        this.io = require('socket.io')(httpServer);
+        this.io.on('connection', function(socket){
+            server.onSocketConnection(socket);
+        });
     }
 
     playerFromSocket(socket, name) {
         return {
             socket: socket,
+            roomId: null,
             name: name
         }
     }
 
-    startGame() {
+    startGame(roomId) {
         let players = [];
         for (let i of Object.keys(this.waiting)) {
             players.push(this.waiting[i]);
@@ -23,14 +29,14 @@ class Server {
 
         let data = {};
         data.pawns = {};
-        let game = new Game();
+        let game = new Game(roomId);
         for (let p of players) {
             game.addPlayer(p);
             this.inGameSockets[p.socket.id] = game;
         }
         
         game.startNewGame();
-        this.games.push(game);
+        this.games[roomId] = game;
     }
 
     onSocketConnection(socket) {
@@ -58,7 +64,13 @@ class Server {
 
             console.log(Object.keys(server.waiting).length + ' players in queue');
             if (Object.keys(server.waiting).length > 1) {
-                console.log('starting a game');
+                let roomId = (Math.random() * 90 + 10) | 0;
+                for (let i of Object.keys(server.waiting)) {
+                    let p = server.waiting[i];
+                    p.socket.join(roomId);
+                    p.roomId = roomId;
+                }
+                console.log('starting a game in room ' + roomId);
                 server.startGame(server.waiting);
                 console.log(Object.keys(server.waiting).length + ' players in queue');
             }
@@ -66,10 +78,5 @@ class Server {
     }
 }
 
-let server = new Server();
 let httpServer = require('./http.js');
-
-let io = require('socket.io')(httpServer);
-io.on('connection', function(socket){
-    server.onSocketConnection(socket);
-});
+let server = new Server(httpServer);

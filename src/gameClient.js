@@ -4,7 +4,7 @@ export default class GameClient {
     constructor() {
         let socket = io();
         this.socket = socket;
-        this.newGameMsg = null;
+        this.newGameMsg = {};
         this.newGameCallback = () => null;
 
         socket.on('new game', function (msg) {
@@ -51,7 +51,7 @@ export default class GameClient {
     }
 
     startNewGame() {
-        this.game.setPlayerInfo(this.newGameMsg);
+        this.game.setPlayerInfo(this.newGameMsg.color);
     }
 
     handleGridSelection(x, y, currentPlayer) {
