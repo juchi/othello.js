@@ -25,8 +25,6 @@ export default class WaitRemoteState {
         this.container.addChild(background);
         this.container.addChild(this.playerInfoContainer);
         this.container.addChild(this.waitContainer);
-
-        this.init();
     }
 
     initConnection() {
@@ -46,12 +44,8 @@ export default class WaitRemoteState {
         }
     }
 
-    init() {
-        this.initNameInput();
-    }
-
     enter() {
-
+        this.initNameInput();
     }
     exit() {
 
