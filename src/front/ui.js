@@ -1,4 +1,6 @@
-export default class UI 
+import state from '../state.js';
+
+export default class UI
 {
     constructor(parentContainer) {
         this.parentContainer = parentContainer;
@@ -32,10 +34,17 @@ export default class UI
         infoText.style = new PIXI.TextStyle({fill: 0xFFFFFF});
         this.container.addChild(infoText);
 
+        const generalInfoText = new PIXI.Text();
+        generalInfoText.x = x;
+        generalInfoText.y = (y += 50);
+        generalInfoText.style = new PIXI.TextStyle({fill: 0xFFFFFF});
+        this.container.addChild(generalInfoText);
+
         this.parentContainer.addChild(this.container);
         this.currentPlayerText = currentPlayerText;
         this.playerText = playerText;
         this.infoText = infoText;
+        this.generalInfoText = generalInfoText;
     }
 
     updateCurrentPlayer(currentPlayer) {
@@ -47,6 +56,15 @@ export default class UI
 
     info(msg) {
         this.infoText.text = msg;
+    }
+    updateGeneralInfo() {
+        if (state.players.length == 0) {
+            return;
+        }
+        this.generalInfoText.text = "Players :\n";
+        for (let p of state.players) {
+            this.generalInfoText.text += p.name + (state.name == p.name ? ' (you)' : '') + "\n"
+        }
     }
 
     destroy() {

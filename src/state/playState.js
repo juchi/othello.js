@@ -38,7 +38,7 @@ export default class PlayState {
 
     }
     exit() {
-
+        this.gameLogic.exit();
     }
 
     update(dt) {

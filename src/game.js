@@ -44,6 +44,7 @@ export default class Game
     startNewGame() {
         this.logic.startNewGame();
         this.info('');
+        this.ui.updateGeneralInfo();
     }
 
     endGame() {

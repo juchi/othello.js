@@ -129,4 +129,8 @@ module.exports = class GameLogic
             this.changePlayer();
         }
     }
+
+    exit() {
+
+    }
 }

@@ -13,6 +13,7 @@ export default class GameClient {
         }.bind(this));
         socket.on('new game', function (msg) {
             this.newGameMsg = msg;
+            state.players = msg.players;
             this.newGameCallback();
         }.bind(this));
         socket.on('init grid', function (msg) {
@@ -62,7 +63,7 @@ export default class GameClient {
         this.socket.emit('grid select', {x: x, y: y});
     }
 
-    disconnect() {
+    exit() {
         this.socket.disconnect();
     }
 }

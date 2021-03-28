@@ -41,7 +41,7 @@ export default class WaitRemoteState {
     destroy() {
         this.container.destroy();
         if (this.connecting) {
-            this.client.disconnect();
+            this.client.exit();
         }
     }
 
