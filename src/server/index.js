@@ -29,9 +29,19 @@ class Server {
             game.addPlayer(p);
             this.inGameSockets[p.socket.id] = game;
         }
-        
+
         game.startNewGame();
         this.games[roomId] = game;
+    }
+
+    joinRoom(socket, roomId, playerName) {
+        let player = this.playerFromSocket(socket, playerName, roomId);
+        if (!server.rooms[roomId]) {
+            server.rooms[roomId] = {players: []};
+        }
+        server.rooms[roomId].players.push(player)
+        player.socket.join(roomId);
+        socket.emit('set private room', roomId);
     }
 
     onSocketConnection(socket) {
@@ -53,18 +63,15 @@ class Server {
         });
 
         socket.on('ask new game', function(data) {
-            console.log(data);
             let roomId = data.roomId;
             if (roomId == -1) {
                 // create private match
                 do {
                     roomId = (Math.random() * 90 + 10) | 0;
                 } while (server.rooms[roomId]);
-                let player = server.playerFromSocket(socket, data ? data.playerName : null, roomId);
-                player.socket.join(roomId);
-                server.rooms[roomId] = {players: [player]};
+
+                server.joinRoom(socket, roomId, data.playerName);
                 console.log('create private match in room ' + roomId);
-                player.socket.emit('set private room', roomId)
             } else if (roomId) {
                 // join private match
                 if (!server.rooms[roomId]) {
@@ -72,9 +79,7 @@ class Server {
                     console.log('unknown room ' + roomId);
                 } else if (server.canJoinRoom(server.rooms[roomId])) {
                     console.log('player join private room');
-                    let player = server.playerFromSocket(socket, data ? data.playerName : null, roomId);
-                    server.rooms[roomId].players.push(player)
-                    player.socket.join(roomId);
+                    server.joinRoom(socket, roomId, data.playerName);
 
                     if (server.isRoomReady(server.rooms[roomId])) {
                         server.startGame(roomId, server.rooms[roomId].players);
@@ -96,17 +101,12 @@ class Server {
                     for (let i of Object.keys(server.waiting)) {
                         let p = server.waiting[i];
                         p.socket.join(roomId);
-                        p.roomId = roomId;
+                        server.joinRoom(p.socket, roomId, p.name);
+                        delete server.waiting[i];
                     }
                     console.log('starting a game in room ' + roomId);
 
-                    let players = [];
-                    for (let i of Object.keys(server.waiting)) {
-                        players.push(server.waiting[i]);
-                        delete server.waiting[i];
-                    }
-
-                    server.startGame(roomId, players);
+                    server.startGame(roomId, server.rooms[roomId].players);
                     console.log(Object.keys(server.waiting).length + ' players in queue');
                 }
             }

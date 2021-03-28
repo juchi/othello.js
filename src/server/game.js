@@ -8,7 +8,7 @@ module.exports = class Game
         this.players = [];
         this.roomId = roomId;
     }
-    
+
     destroy() {
         this.logic.gameClient = null;
         this.logic = null;

@@ -15,7 +15,7 @@ export default class PlayState {
         let ui = new UI(this.container);
         this.ui = ui;
         ui.setup();
-        
+
         let renderer = new Renderer(this.container);
         this.game = new Game(ui, renderer, this.gameLogic, this);
         this.game.startNewGame();
@@ -30,6 +30,7 @@ export default class PlayState {
     }
 
     destroy() {
+        this.gameLogic.exit();
         this.game.destroy();
         this.ui.destroy();
     }
@@ -38,7 +39,7 @@ export default class PlayState {
 
     }
     exit() {
-        this.gameLogic.exit();
+
     }
 
     update(dt) {
