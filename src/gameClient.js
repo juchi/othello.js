@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import state from './state.js';
 
 export default class GameClient {
     constructor() {
@@ -7,6 +8,9 @@ export default class GameClient {
         this.newGameMsg = {};
         this.newGameCallback = () => null;
 
+        socket.on('set private room', function (msg) {
+            state.privateRoomId = msg;
+        }.bind(this));
         socket.on('new game', function (msg) {
             this.newGameMsg = msg;
             this.newGameCallback();
@@ -46,7 +50,7 @@ export default class GameClient {
     }
 
     askStartGame(data, callback) {
-        this.socket.emit('ask new game', {playerName: data.playerName});
+        this.socket.emit('ask new game', {playerName: data.playerName, roomId: data.roomId});
         this.newGameCallback = callback;
     }
 
