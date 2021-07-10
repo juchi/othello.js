@@ -64,6 +64,7 @@ export default class GameClient {
     }
 
     exit() {
+        this.socket.emit('leave room');
         this.socket.disconnect();
     }
 }

@@ -62,6 +62,45 @@ class Server {
             game && game.handleGridSelection(data.x, data.y, socket);
         });
 
+        socket.on('ask restart', function(data) {
+            let game = server.inGameSockets[socket.id];
+            if (!game) {
+                return;
+            }
+            for (let p of game.players) {
+                if (p.socket.id == socket.id) {
+                    p.askRestart = true;
+                    break;
+                }
+            }
+
+            for (let p of game.players) {
+                if (!p.askRestart) {
+                    return;
+                }
+            }
+            game.startNewGame();
+        });
+
+        socket.on('leave room', function(data) {
+            let game = server.inGameSockets[socket.id];
+            if (!game) {
+                return;
+            }
+            for (let p of game.players) {
+                if (p.socket.id == socket.id) {
+                    game.playerLeft(p);
+                    break;
+                }
+            }
+            for (let i of Object.keys(server.rooms[game.roomId].players)) {
+                if (server.rooms[game.roomId].players[i].socket.id == socket.id) {
+                    server.rooms[game.roomId].players.splice(i, 1);
+                    break;
+                }
+            }
+        });
+
         socket.on('ask new game', function(data) {
             let roomId = data.roomId;
             if (roomId == -1) {

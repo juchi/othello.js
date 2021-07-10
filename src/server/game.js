@@ -17,6 +17,7 @@ module.exports = class Game
 
     addPlayer(player) {
         player.color = this.players.length;
+        player.askRestart = false;
         this.players.push(player);
     }
 
@@ -34,6 +35,7 @@ module.exports = class Game
     startNewGame() {
         let playerData = [];
         for (let p of this.players) {
+            p.askRestart = false;
             playerData.push({
                 name: p.name,
                 color: p.color,
@@ -52,6 +54,10 @@ module.exports = class Game
         for (let p of this.players) {
             p.socket.emit('end game', winner);
         }
+    }
+
+    playerLeft(p) {
+        this.broadcast('player ' + p.name + ' left');
     }
 
     onDisconnect(socketId) {
